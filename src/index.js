@@ -85,7 +85,13 @@ export function syncReduxAndRouter(history, store, selectRouterState = SELECT_ST
     )
   }
 
-  const unsubscribeHistory = history.listen(location => {
+  const unsubscribeHistory = history.listen((location, state) => {
+
+    // https://github.com/rackt/redux-simple-router/issues/168
+    if (state && state.hasOwnProperty('location')) {
+      location = state.location
+    }
+
     const route = {
       path: createPath(location),
       state: location.state
